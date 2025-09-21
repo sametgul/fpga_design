@@ -87,7 +87,7 @@ Vivado has options like **rebuilt** and **none** for how it handles module hiera
 * `rebuilt`: optimizer flattens and merges logic, removing unnecessary hierarchy. Your design may appear as one flat block.
 * `none`: keeps submodules and hierarchy intact.
 
-![merge](../assets/merge_structures.png)
+![merge](docs/merge_structures.png)
 
 ## Reset Strategy
 
@@ -176,7 +176,7 @@ When struggling with timing violations:
 * Enable **retiming** in synthesis (`Settings → Synthesis → Retiming`).
 * The synthesizer may move/redistribute these registers across logic to create a pipelined structure, improving timing.
 
-![register](../assets/replace_registers.png)
+![register](docs/replace_registers.png)
 
 ## References
 
