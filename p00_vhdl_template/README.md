@@ -6,7 +6,8 @@ These are some VHDL constructs that I frequently use and sometimes forget. I kee
 
 * Constants and generics in **UPPERCASE**.
 * Ports use `_in` and `_out` postfixes.
-* I sometimes add the width as a suffix (e.g. `_in16`).
+* I like to add the width as a suffix (e.g. `_in16`).
+* Using exponantiation terms `2**N-1` is good to have.
 
 ```vhdl
 --------------------------------------------------------------------------------
@@ -25,6 +26,7 @@ entity my_entity_name is
         CLKFREQ  : integer := 100_000_000;
         SCLKFREQ : integer := 1_000_000;
         WIDTH    : integer := 8;
+        N        : integer := 8;
         DEBUG    : boolean := false
     );
     port (
@@ -48,7 +50,7 @@ architecture Behavioral of my_entity_name is
     constant CONSTANT2      : std_logic_vector (WIDTH-1 downto 0) := (others => '0');
 
     --------------------------------------------------------------------------------
-    -- TYPE DECLARATIONS
+    -- TYPE DECLARATION
     --------------------------------------------------------------------------------
     type t_state is (S_START, S_OPERATION, S_TERMINATE, S_IDLE);
 
@@ -56,9 +58,9 @@ architecture Behavioral of my_entity_name is
     -- SIGNALS
     --------------------------------------------------------------------------------
     signal state : t_state := S_START;
-    signal s0    : std_logic_vector (7 downto 0);              -- uninitialized
+    signal s0    : std_logic_vector (N-1 downto 0);            -- uninitialized
     signal s1    : std_logic_vector (7 downto 0) := x"00";     -- initialized
-    signal s2    : integer range 0 to 255 := 0;                -- 8-bit HW
+    signal s2    : integer range 0 to 2**N-1 := 0;             -- N-bit HW, N=8 so the range is 0 to 255
     signal s3    : integer := 0;                               -- default 32-bit
     signal s4    : std_logic := '0';
 
@@ -136,3 +138,9 @@ begin
 
 end Behavioral;
 ```
+
+---
+
+### References I found useful
+
+* [https://github.com/mbaykenar](https://github.com/mbaykenar)
