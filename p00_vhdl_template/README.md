@@ -139,8 +139,6 @@ begin
 end Behavioral;
 ```
 
----
+## References
 
-### References I found useful
-
-* [https://github.com/mbaykenar](https://github.com/mbaykenar)
+* [Mehmet Burak Aykenar - Github Repo](https://github.com/mbaykenar)

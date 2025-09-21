@@ -2,7 +2,6 @@
 
 This document collects some important behaviors and reminders that are easy to forget when writing VHDL.
 
----
 
 ## Process Block Behavior
 
@@ -14,17 +13,18 @@ This document collects some important behaviors and reminders that are easy to f
 * VHDL is **case-insensitive**.
 
 ```vhdl
-process (clk)
-begin
-  if rising_edge(clk) then
-    if rst = '1' then
-      state <= S_IDLE;
-      cntr1 <= 0;
-      cntr2 <= (others => '0');
-    else
-      -- ...
-    end if;
-  end if;
+process (clk) begin
+	if rising_edge(clk) then
+		if (sel = '0') then
+			a <= b + c;
+		else
+			a <= b - c;
+		end if;
+			a <= a + b + c;
+		if (op) then
+			a <= x"03";
+		end if;
+	end if;
 end process;
 ```
 
@@ -33,8 +33,6 @@ Tip: use `'length` attributes to avoid memorizing signal widths:
 ```vhdl
 cntr1_out <= std_logic_vector(to_unsigned(cntr1, cntr1_out'length));
 ```
-
----
 
 ## Common Combinational Pitfalls
 
@@ -82,8 +80,6 @@ end process PROCESS4;
 
 Here, `a` is both read and written inside the same process. This creates a **combinational feedback loop**. Vivado synthesizes it without warnings, but it may cause oscillation or unstable behavior.
 
----
-
 ## Hierarchy Optimization in Vivado
 
 Vivado has options like **rebuilt** and **none** for how it handles module hierarchy during synthesis:
@@ -91,9 +87,7 @@ Vivado has options like **rebuilt** and **none** for how it handles module hiera
 * `rebuilt`: optimizer flattens and merges logic, removing unnecessary hierarchy. Your design may appear as one flat block.
 * `none`: keeps submodules and hierarchy intact.
 
-![merge](assets/merge_structures.png)
-
----
+![merge](../assets/merge_structures.png)
 
 ## Reset Strategy
 
@@ -161,8 +155,6 @@ begin
 end Behavioral;
 ```
 
----
-
 ## Timing Considerations
 
 * For **asynchronous inputs** or **crossing clock domains**:
@@ -175,7 +167,6 @@ end Behavioral;
 
   * Use dual-clock FIFOs or Gray-coded counters in dual-port RAMs.
 
----
 
 ## Timing Closure Trick
 
@@ -185,4 +176,8 @@ When struggling with timing violations:
 * Enable **retiming** in synthesis (`Settings → Synthesis → Retiming`).
 * The synthesizer may move/redistribute these registers across logic to create a pipelined structure, improving timing.
 
-*(original document had an image here: “replace\_registers.png”)*
+![register](../assets/replace_registers.png)
+
+## References
+
+* [VHDL ile FPGA PROGRAMLAMA](https://www.udemy.com/course/vhdl-ile-fpga-programlama-temel-seviye/)
