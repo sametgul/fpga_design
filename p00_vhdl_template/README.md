@@ -139,6 +139,43 @@ begin
 end Behavioral;
 ```
 
+For writing testbenches in VHDL, I generally add the following first
+
+```vhdl
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_pmodda4 is
+end tb_pmodda4;
+
+architecture Behavioral of tb_pmodda4 is
+
+    constant CLK_PERIOD : time      := 10 ns;
+    signal   clk        : std_logic := '0';
+
+begin
+
+    pSTIMULI: process begin
+        -- ...
+        
+        assert false
+        report "SIM DONE"
+        severity failure;
+    end process;
+
+    pCLK_GEN: process begin
+        clk <= '0';
+        wait for CLK_PERIOD/2;
+        clk <= '1';
+        wait for CLK_PERIOD/2;
+    end process;
+
+
+end Behavioral;
+
+```
+
 ## References
 
 * [Mehmet Burak Aykenar - Github Repo](https://github.com/mbaykenar)
