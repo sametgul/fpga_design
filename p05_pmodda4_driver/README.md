@@ -5,13 +5,13 @@ This repository includes a revised VHDL driver for the Digilent **PmodDA4** (Ana
 ## TL;DR
 
 * The AD5628’s SPI interface supports **up to 50 MHz SCLK**.
-* Each write uses a **32-bit frame** (`[PAD4][CMD4][ADDR4][DATA12][PAD8]`), so the **maximum theoretical update rate** is:
+* Each write uses a **32-bit frame** (`[PAD4][CMD4][ADDR4][DATA12][PAD8]`), and three extra clock comes from the FSM that I used in the VHDL code, so the **maximum theoretical update rate** is:
 
   $$
-  f_\text{update,max}=\frac{f_\text{SCLK}}{32}
+  f_\text{update,max}=\frac{f_\text{SCLK}}{32+3}
   $$
 
-  For example, **12.5 MHz SCLK → 390 625 S/s** per channel.
+  For example, **12.5 MHz SCLK → 357,143 S/s** per channel.
 * The **true analog limit** is not the SPI bus but the **output amplifier’s settling time** and **slew rate**.
 
 ---
@@ -47,21 +47,14 @@ Examples with SR = 1.2 V/µs:
 
 In short: SPI bandwidth decides **how often** you can send a code; **slew/settling** decides **how fast and how cleanly** the analog output can follow those codes.
 
----
-
 ## Practical operating point used here
 
 For robust behavior and clean waveforms I use:
 
-* **SCLK = 12.5 MHz** → **$f_s = 12.5\,\text{MHz}/32 = 390\,625\ \text{S/s}$**.
-* For **1 kHz** sine this yields **~390 samples/cycle** (very small step size).
-* Even for **30 kHz** you still get **~13 samples/cycle**—usable, though for low THD you typically target ≥16–32 samples/cycle.
+* **SCLK = 12.5 MHz** → **$f_s = 12.5\,\text{MHz}/32 = 357\,143\ \text{S/s}$**.
 
-With $T_s \approx 2.56\,\mu s$ between updates, and tiny per-sample steps for a 1 kHz sine, the output comfortably settles well within each sample period. You are nowhere near the slew limit at 1 kHz (even at full-scale).
+with $T_s \approx 2.8\,\mu s$ between updates.
 
-> Note: Some designs count a few extra SPI clocks for housekeeping; the AD5628 itself shifts a 32-bit command/data frame. If your controller “spends” ~35 clocks end-to-end, scale the math by that factor.
-
----
 
 ## Implementation notes
 
