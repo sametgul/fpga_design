@@ -5,13 +5,13 @@ This repository includes a revised VHDL driver for the Digilent **PmodDA4** (Ana
 ## TL;DR
 
 * The AD5628’s SPI interface supports **up to 50 MHz SCLK**.
-* Each write uses a **32-bit frame** (`[PAD4][CMD4][ADDR4][DATA12][PAD8]`), and three extra clock comes from the FSM that I used in the VHDL code, so the **maximum theoretical update rate** is:
+* Each write uses a **32-bit frame** (`[PAD4][CMD4][ADDR4][DATA12][PAD8]`), and the FSM in this VHDL driver adds **4 extra clocks**, so the **maximum theoretical update rate** is:
 
   $$
-  f_\text{update,max}=\frac{f_\text{SCLK}}{32+3}
+  f_\text{update,max}=\frac{f_\text{SCLK}}{32+4} = \frac{f_\text{SCLK}}{36}
   $$
 
-  For example, **12.5 MHz SCLK → 357,143 S/s** per channel.
+  For example, **12.5 MHz SCLK → 347,222 S/s** per channel.
 * The **true analog limit** is not the SPI bus but the **output amplifier’s settling time** and **slew rate**.
 
 ---
@@ -51,9 +51,9 @@ In short: SPI bandwidth decides **how often** you can send a code; **slew/settli
 
 For robust behavior and clean waveforms I use:
 
-* **SCLK = 12.5 MHz** → **$f_s = 12.5\,\text{MHz}/32 = 357\,143\ \text{S/s}$**.
+* **SCLK = 12.5 MHz** → **$f_s = 12.5\,\text{MHz}/36 = 347\,222\ \text{S/s}$**.
 
-with $T_s \approx 2.8\,\mu s$ between updates.
+with $T_s \approx 2.88\,\mu s$ between updates.
 
 
 ## Implementation notes
@@ -74,3 +74,24 @@ These are the testbench results
 
 ![testbench1](docs/waveform.png)
 ![testbench2](docs/waveform2.png)
+
+## ZYBO Z7 Test
+
+I also tested this on the **ZYBO Z7 FPGA board**. The design simply counts up from 0 to 4095 on every `wrt_done` pulse. The code is in the `src/` folder.
+
+* Effective **fs = 347.2 kS/s**
+* Ramp frequency ≈ **84.8 Hz**
+
+Block design used in Vivado:
+
+![bd](docs/bd.png)
+
+Scope capture of the sawtooth output:
+
+![toothsaw](docs/toothsaw.png)
+
+I also routed `wrt_done` to a pin to verify the update frequency — it matches our theoretical assumption:
+
+![wdone](docs/wdone.png)
+
+There is also a `top.vhd` in `src/` so you can run the same test without creating a block design. Testbench files are in the `tb/` folder.
