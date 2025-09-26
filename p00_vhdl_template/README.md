@@ -160,8 +160,8 @@ begin
         -- ...
         
         assert false
-        report "SIM DONE"
-        severity failure;
+            report "SIM DONE"
+            severity failure;          
     end process;
 
     pCLK_GEN: process begin
