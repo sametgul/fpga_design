@@ -11,3 +11,5 @@ The projects spans RTL Design, VHDL and Vivado IPs.
 3. [N-Bit Adder with VIO & ILA (CMOD A7)](p03_adder_vio_ila/README.md)
 4. [DEBOUNCER](p04_debouncer/README.md)
 5. [PMODDA4 Driver (DAC AD5628)](p05_pmodda4_driver/README.md)
+6. [PWM GENERATOR](p06_pwm_out/README.md)
+7. [rising_edge and Edge Detect Signals](p07_clock_and_edgedetect/README.md)
