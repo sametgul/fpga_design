@@ -13,20 +13,26 @@ Re-run **Synthesis** so the new options are available.
 
 ---
 
-## Step 2: Optimize Bitstream for Flash Programming
+## Step 2: (Optional) Optimize Bitstream for Flash Programming
 
 Open **Tools → Edit Device Properties** and adjust the following settings:
 
 * `General → Enable Bitstream Compression → TRUE`
+Makes the .bin file smaller. Programming to flash is faster.
   ![bitcomp](docs/en_bit_comp.png)
 
 * `Configuration → Configuration Rate → 33 MHz`
+Increases the clock rate the FPGA uses to read from flash. Shorter boot time.
   ![clock](docs/clock.png)
 
 * `Configuration Modes → Master SPI x4`
+Uses 4-bit wide flash transfers instead of 1-bit. Roughly 4× faster boot.
   ![qspi](docs/qspi.png)
 
-These settings speed up configuration from flash.
+**Summary:**
+
+* Without these, programming still works, but flashing is slower and FPGA takes longer to configure on reset/power-up.
+* With these, flashing and booting are both noticeably faster.
 
 ---
 
